@@ -2,7 +2,10 @@ import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/co
 import * as THREE from 'three';
 @Component({
   selector: 'app-3d-space',
-  template: `<div #container></div>`,
+  template: `
+    <p>rotació x: {{this.camera.rotation.x }}</p>
+    <div #container></div>
+  `,
   styles: [`
     :host {
       display: block;
@@ -11,8 +14,8 @@ import * as THREE from 'three';
       overflow: hidden;
     }
     div {
-      width: 100%;
-      height: 100%;
+      width: 300px;
+      height: 300px;
     }
   `]
 })
@@ -20,7 +23,7 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
   @ViewChild('container', { static: true }) container!: ElementRef;
 
   private scene!: THREE.Scene;
-  private camera!: THREE.PerspectiveCamera;
+  camera!: THREE.PerspectiveCamera;
   private renderer!: THREE.WebGLRenderer;
   private cube!: THREE.Mesh;
   private animationId: number | null = null;
