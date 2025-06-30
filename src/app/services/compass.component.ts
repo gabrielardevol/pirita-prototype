@@ -2,7 +2,6 @@ import {
   Component, ElementRef, AfterViewInit, ViewChild, NgZone
 } from '@angular/core';
 import * as THREE from 'three';
-import { DeviceOrientationControls } from 'three/examples/jsm/controls/DeviceOrientationControls';
 
 @Component({
   selector: 'app-compass-3d',
@@ -15,7 +14,7 @@ export class Compass3DComponent implements AfterViewInit {
   private renderer!: THREE.WebGLRenderer;
   private scene!: THREE.Scene;
   private camera!: THREE.PerspectiveCamera;
-  private controls!: DeviceOrientationControls;
+  private world!: THREE.Group;
   private objects: { [key: string]: THREE.Mesh } = {};
 
   constructor(private ngZone: NgZone) {}
@@ -34,7 +33,8 @@ export class Compass3DComponent implements AfterViewInit {
     const height = window.innerHeight;
 
     this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-    this.camera.position.set(0, 2, 5);
+    this.camera.position.set(0, 0, 0); // Centrada a l’origen
+    this.scene.add(this.camera);
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(width, height);
@@ -44,14 +44,18 @@ export class Compass3DComponent implements AfterViewInit {
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
     this.scene.add(ambientLight);
 
-    // Terra / horitzó
+    // Grup del món
+    this.world = new THREE.Group();
+    this.scene.add(this.world);
+
+    // Terra
     const groundGeometry = new THREE.PlaneGeometry(50, 50);
     const groundMaterial = new THREE.MeshStandardMaterial({ color: 0x228b22 });
     const ground = new THREE.Mesh(groundGeometry, groundMaterial);
     ground.rotation.x = -Math.PI / 2;
-    this.scene.add(ground);
+    this.world.add(ground);
 
-    // Objectes als punts cardinals (caixes per ara)
+    // Objectes als punts cardinals
     const markerGeometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
     const cardinalPoints = [
       { label: 'N', x: 0, z: -5 },
@@ -64,33 +68,51 @@ export class Compass3DComponent implements AfterViewInit {
       const material = new THREE.MeshStandardMaterial({ color: 0xff0000 });
       const marker = new THREE.Mesh(markerGeometry, material);
       marker.position.set(point.x, 0.25, point.z);
-      this.scene.add(marker);
+      this.world.add(marker);
       this.objects[point.label] = marker;
     }
+
+    // ✅ Rotació inicial del món per corregir orientació (compensa que el mòbil està pla)
+    this.world.rotation.x = Math.PI / 2;
   }
 
   private animate = () => {
     requestAnimationFrame(this.animate);
-    if (this.controls) this.controls.update();
     this.renderer.render(this.scene, this.camera);
   };
 
   private setupDeviceOrientation(): void {
-    this.controls = new DeviceOrientationControls(this.camera);
-
-    // iOS requereix permís explícit
+    // Demana permís a iOS
     if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
       (DeviceOrientationEvent as any).requestPermission()
         .then((response: string) => {
           if (response === 'granted') {
-            this.controls.connect();
+            window.addEventListener('deviceorientation', this.onDeviceOrientation, true);
           } else {
-            console.warn('Permís denegat per deviceorientation');
+            console.warn('Permís rebutjat');
           }
         })
         .catch(console.error);
     } else {
-      this.controls.connect(); // Android o navegadors compatibles
+      window.addEventListener('deviceorientation', this.onDeviceOrientation, true);
     }
   }
+
+  private onDeviceOrientation = (event: DeviceOrientationEvent): void => {
+    if (event.alpha == null || event.beta == null || event.gamma == null) return;
+
+    // Passem graus a radians
+    const alpha = THREE.MathUtils.degToRad(event.alpha); // Azimut
+    const beta = THREE.MathUtils.degToRad(event.beta);   // Inclinació cap amunt/avall
+    const gamma = THREE.MathUtils.degToRad(event.gamma); // Inclinació lateral
+
+    // Construïm rotació
+    const euler = new THREE.Euler();
+    euler.set(beta, alpha, -gamma, 'YXZ');
+
+    const quaternion = new THREE.Quaternion().setFromEuler(euler);
+
+    // ✅ Apliquem rotació a la càmera
+    this.camera.quaternion.copy(quaternion);
+  };
 }
