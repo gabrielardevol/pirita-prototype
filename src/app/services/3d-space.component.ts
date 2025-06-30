@@ -87,7 +87,7 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
     const alpha = degToRad(0); // Z
     // const alpha = degToRad(alphaDeg); // Z
 
-    const beta = degToRad(betaDeg) - 1.5 ;   // X
+    const beta = degToRad(betaDeg) + 1.5 ;   // X
     const gamma = degToRad(0); // Y
     // const gamma = degToRad(gammaDeg); // Y
 
