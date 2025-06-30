@@ -27,7 +27,11 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
   camera!: THREE.PerspectiveCamera;
   private renderer!: THREE.WebGLRenderer;
   private cube!: THREE.Mesh;
+  private ground!: THREE.Mesh;
   private animationId: number | null = null;
+
+  // Grup per pivotar la càmera i el món
+  private worldGroup!: THREE.Group;
 
   ngOnInit(): void {
     this.initThree();
@@ -36,21 +40,28 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.animationId) {
-      cancelAnimationFrame(this.animationId);
-    }
+    if (this.animationId) cancelAnimationFrame(this.animationId);
     this.renderer.dispose();
     window.removeEventListener('deviceorientation', this.handler);
   }
 
   handler = (event: DeviceOrientationEvent) => {
+    if (event.alpha === null) return;
+
+    // Converteix graus a radians
     const degToRad = (deg: number) => deg * Math.PI / 180;
 
-    const alpha = degToRad(event.alpha || 0);
-    const beta  = degToRad(event.beta  || 0);
-    const gamma = degToRad(event.gamma || 0);
+    const alpha = degToRad(event.alpha); // Z
+    const beta = degToRad(event.beta);   // X
+    const gamma = degToRad(event.gamma); // Y
 
-    this.setCameraRotation(beta, gamma, alpha);
+    // Crear quaternion a partir dels angles ZXY (ordre usat per sensors)
+    const euler = new THREE.Euler(beta, gamma, alpha, 'ZXY');
+    const quaternion = new THREE.Quaternion().setFromEuler(euler);
+
+    // Posa la rotació de la càmera com la inversa del quaternion (rotació del dispositiu)
+    // Això fa que la càmera "miri" cap a la direcció real.
+    this.camera.quaternion.copy(quaternion.inverse());
   };
 
   private initThree(): void {
@@ -59,35 +70,37 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
     const width = this.container.nativeElement.clientWidth;
     const height = this.container.nativeElement.clientHeight;
     this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-    this.camera.position.set(0, 2, 5); // puja una mica la càmera per veure el terra
+    this.camera.position.set(0, 1.5, 0); // Alçada típica del cap respecte al terra
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(width, height);
     this.container.nativeElement.appendChild(this.renderer.domElement);
 
-    // Cub
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const material = new THREE.MeshNormalMaterial();
-    this.cube = new THREE.Mesh(geometry, material);
-    this.scene.add(this.cube);
+    // Grup per món (terra + objectes)
+    this.worldGroup = new THREE.Group();
+    this.scene.add(this.worldGroup);
 
-    // Terra (plane)
+    // Terra
     const groundGeo = new THREE.PlaneGeometry(10, 10);
     const groundMat = new THREE.MeshStandardMaterial({ color: 0x228822, side: THREE.DoubleSide });
-    const ground = new THREE.Mesh(groundGeo, groundMat);
-    ground.rotation.x = -Math.PI / 2; // gira el pla 90 graus per fer-lo horitzontal
-    ground.position.y = -0.5; // posa-ho just sota el cub (el cub fa 1 d'alçada)
-    this.scene.add(ground);
+    this.ground = new THREE.Mesh(groundGeo, groundMat);
+    this.ground.rotation.x = -Math.PI / 2; // terra horitzontal
+    this.ground.position.y = 0;
+    this.worldGroup.add(this.ground);
 
-    // Afegim llum perquè es vegi el terra (amb materials que reaccionen a la llum)
+    // Cub d'exemple sobre el terra
+    const cubeGeo = new THREE.BoxGeometry(1, 1, 1);
+    const cubeMat = new THREE.MeshNormalMaterial();
+    this.cube = new THREE.Mesh(cubeGeo, cubeMat);
+    this.cube.position.y = 0.5; // mig metre sobre el terra
+    this.worldGroup.add(this.cube);
+
+    // Llums
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
     this.scene.add(ambientLight);
-
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
     directionalLight.position.set(5, 10, 7);
     this.scene.add(directionalLight);
-
-    this.setCameraRotation(Math.PI / 12, Math.PI / 6, 0);
 
     window.addEventListener('resize', () => this.onResize());
   }
@@ -107,11 +120,5 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
     this.cube.rotation.y += 0.01;
 
     this.renderer.render(this.scene, this.camera);
-  }
-
-  setCameraRotation(x: number, y: number, z: number) {
-    this.camera.rotation.x = x;
-    this.camera.rotation.y = y;
-    this.camera.rotation.z = z;
   }
 }
