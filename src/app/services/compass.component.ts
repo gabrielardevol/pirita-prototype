@@ -2,7 +2,6 @@ import {
   Component, ElementRef, AfterViewInit, ViewChild, NgZone
 } from '@angular/core';
 import * as THREE from 'three';
-import { DeviceOrientationControls } from 'three/examples/jsm/controls/DeviceOrientationControls';
 
 @Component({
   selector: 'app-compass-3d',
@@ -15,7 +14,6 @@ export class Compass3DComponent implements AfterViewInit {
   private renderer!: THREE.WebGLRenderer;
   private scene!: THREE.Scene;
   private camera!: THREE.PerspectiveCamera;
-  private controls!: DeviceOrientationControls;
   private objects: { [key: string]: THREE.Mesh } = {};
 
   constructor(private ngZone: NgZone) {}
@@ -51,7 +49,7 @@ export class Compass3DComponent implements AfterViewInit {
     ground.rotation.x = -Math.PI / 2;
     this.scene.add(ground);
 
-    // Objectes als punts cardinals (caixes per ara)
+    // Objectes als punts cardinals
     const markerGeometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
     const cardinalPoints = [
       { label: 'N', x: 0, z: -5 },
@@ -71,26 +69,19 @@ export class Compass3DComponent implements AfterViewInit {
 
   private animate = () => {
     requestAnimationFrame(this.animate);
-    if (this.controls) this.controls.update();
     this.renderer.render(this.scene, this.camera);
   };
 
   private setupDeviceOrientation(): void {
-    this.controls = new DeviceOrientationControls(this.camera);
+    window.addEventListener('deviceorientation', (event) => {
+      if (event.alpha !== null) {
+        const alpha = THREE.MathUtils.degToRad(event.alpha || 0);
+        const beta = THREE.MathUtils.degToRad(event.beta || 0);
+        const gamma = THREE.MathUtils.degToRad(event.gamma || 0);
 
-    // iOS requereix permís explícit
-    if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
-      (DeviceOrientationEvent as any).requestPermission()
-        .then((response: string) => {
-          if (response === 'granted') {
-            this.controls.connect();
-          } else {
-            console.warn('Permís denegat per deviceorientation');
-          }
-        })
-        .catch(console.error);
-    } else {
-      this.controls.connect(); // Android o navegadors compatibles
-    }
+        const euler = new THREE.Euler(beta, alpha, -gamma, 'YXZ');
+        this.camera.quaternion.setFromEuler(euler);
+      }
+    }, true);
   }
 }
