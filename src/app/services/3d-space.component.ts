@@ -1,12 +1,32 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import * as THREE from 'three';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-3d-space',
   template: `
-    <p>rotació x: {{this.camera.rotation.x }}</p>
+    <p>rotació x: {{ this.camera.rotation.x }}</p>
+    <p>rotació y: {{ this.camera.rotation.y }}</p>
+    <p>rotació z: {{ this.camera.rotation.z }}</p>
+    <form style="margin-top: 10px;">
+      <label>
+        X (rad):
+        <input type="number" step="0.01" [(ngModel)]="rotationX" (ngModelChange)="applyRotation()" name="rotX">
+      </label>
+      <label>
+        Y (rad):
+        <input type="number" step="0.01" [(ngModel)]="rotationY" (ngModelChange)="applyRotation()" name="rotY">
+      </label>
+      <label>
+        Z (rad):
+        <input type="number" step="0.01" [(ngModel)]="rotationZ" (ngModelChange)="applyRotation()" name="rotZ">
+      </label>
+    </form>
     <div #container></div>
   `,
+  imports: [
+    FormsModule
+  ],
   styles: [`
     :host {
       display: block;
@@ -14,6 +34,7 @@ import * as THREE from 'three';
       height: 300px;
       overflow: hidden;
     }
+
     div {
       width: 300px;
       height: 300px;
@@ -33,6 +54,10 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
   // Grup per pivotar la càmera i el món
   private worldGroup!: THREE.Group;
 
+  rotationX = 0;
+  rotationY = 0;
+  rotationZ = 0;
+
   ngOnInit(): void {
     this.initThree();
     this.animate();
@@ -47,22 +72,31 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
 
   handler = (event: DeviceOrientationEvent) => {
     if (event.alpha === null) return;
+    if (event.beta === null) return;
+    if (event.gamma === null) return;
 
-    // Converteix graus a radians
-    const degToRad = (deg: number) => deg * Math.PI / 180;
-
-    const alpha = degToRad(event.alpha || 0); // Z
-    const beta = degToRad(event.beta || 0);   // X
-    const gamma = degToRad(event.gamma || 0); // Y
-
-    // Crear quaternion a partir dels angles ZXY (ordre usat per sensors)
-    const euler = new THREE.Euler(beta, gamma, alpha, 'ZXY');
-    const quaternion = new THREE.Quaternion().setFromEuler(euler);
-
-    // Posa la rotació de la càmera com la inversa del quaternion (rotació del dispositiu)
-    // Això fa que la càmera "miri" cap a la direcció real.
+    const quaternion = this.getQuaternionFromDeviceOrientation(event.alpha, event.beta, event.gamma);
     this.camera.quaternion.copy(quaternion).invert();
   };
+
+  getQuaternionFromDeviceOrientation(alphaDeg: number = 0, betaDeg: number = 0, gammaDeg: number = 0): THREE.Quaternion {
+    const degToRad = (deg: number) => deg * Math.PI / 180;
+
+    const alpha = degToRad(alphaDeg); // Z
+    const beta = degToRad(betaDeg);   // X
+    const gamma = degToRad(gammaDeg); // Y
+
+    const euler = new THREE.Euler(beta, gamma, alpha, 'ZXY');
+    return new THREE.Quaternion().setFromEuler(euler);
+  }
+
+  applyRotation() {
+    this.setCameraRotationManual(this.rotationX, this.rotationY, this.rotationZ);
+  }
+
+  setCameraRotationManual(xRad: number, yRad: number, zRad: number) {
+    this.camera.rotation.set(xRad, yRad, zRad);
+  }
 
   private initThree(): void {
     this.scene = new THREE.Scene();
@@ -114,11 +148,11 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
   }
 
   private animate = (): void => {
-    // this.animationId = requestAnimationFrame(this.animate);
-    //
-    // this.cube.rotation.x += 0.01;
-    // this.cube.rotation.y += 0.01;
-    //
-    // this.renderer.render(this.scene, this.camera);
+    this.animationId = requestAnimationFrame(this.animate);
+
+    this.cube.rotation.x += 0.01;
+    this.cube.rotation.y += 0.01;
+
+    this.renderer.render(this.scene, this.camera);
   }
 }
