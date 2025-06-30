@@ -33,6 +33,9 @@ export class Compass3DComponent implements AfterViewInit {
 
     this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
     this.camera.position.set(0, 2, 5);
+    let fixup = new THREE.Quaternion().setFromEuler(new THREE.Euler(Math.PI*.5,0,0));
+    this.camera.setRotationFromQuaternion(fixup);
+    this.camera.quaternion.multiply(fixup)
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(width, height);
@@ -84,4 +87,8 @@ export class Compass3DComponent implements AfterViewInit {
       }
     }, true);
   }
+
+
+
+
 }
