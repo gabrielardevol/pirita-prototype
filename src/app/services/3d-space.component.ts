@@ -37,6 +37,12 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
     this.renderer.dispose();
   }
 
+  handler = (event: DeviceOrientationEvent) => {
+    this.setCameraRotation(
+      event.alpha || 0, event.beta  || 0, event.gamma || 0
+    )
+  };
+
   private initThree(): void {
     // Escena
     this.scene = new THREE.Scene();
