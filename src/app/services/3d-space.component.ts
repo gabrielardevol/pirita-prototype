@@ -51,9 +51,9 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
     // Converteix graus a radians
     const degToRad = (deg: number) => deg * Math.PI / 180;
 
-    const alpha = degToRad(event.alpha); // Z
-    const beta = degToRad(event.beta);   // X
-    const gamma = degToRad(event.gamma); // Y
+    const alpha = degToRad(event.alpha || 0); // Z
+    const beta = degToRad(event.beta || 0);   // X
+    const gamma = degToRad(event.gamma || 0); // Y
 
     // Crear quaternion a partir dels angles ZXY (ordre usat per sensors)
     const euler = new THREE.Euler(beta, gamma, alpha, 'ZXY');
@@ -61,7 +61,7 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
 
     // Posa la rotació de la càmera com la inversa del quaternion (rotació del dispositiu)
     // Això fa que la càmera "miri" cap a la direcció real.
-    this.camera.quaternion.copy(quaternion.inverse());
+    this.camera.quaternion.copy(quaternion).invert();
   };
 
   private initThree(): void {
