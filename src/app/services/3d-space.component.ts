@@ -58,7 +58,7 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
 
   rotationX = 0;
   rotationY = 0;
-  rotationZ = 0;
+  rotationZ = 3;
 
   ngOnInit(): void {
     this.initThree();
@@ -85,11 +85,11 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
     const degToRad = (deg: number) => deg * Math.PI / 180;
 
     // const alpha = degToRad(alphaDeg); // Z
-    const alpha = degToRad(0); // Z
+    const alpha = degToRad(alphaDeg) + 3; // Z
 
     const beta = degToRad(betaDeg) + 1.5 ;   // X
     // const gamma = degToRad(gammaDeg); // Y
-    const gamma = degToRad(0); // Y
+    const gamma = this.rotationZ; // Y
 
     const euler = new THREE.Euler(beta, gamma, alpha, 'ZXY');
     return new THREE.Quaternion().setFromEuler(euler);
