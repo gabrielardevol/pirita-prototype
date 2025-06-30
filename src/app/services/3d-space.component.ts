@@ -6,8 +6,8 @@ import * as THREE from 'three';
   styles: [`
     :host {
       display: block;
-      width: 100vw;
-      height: 100vh;
+      width: 300px;
+      height: 300px;
       overflow: hidden;
     }
     div {
