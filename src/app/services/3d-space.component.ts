@@ -1,5 +1,6 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import * as THREE from 'three';
+
 @Component({
   selector: 'app-3d-space',
   template: `
@@ -32,7 +33,6 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
     this.initThree();
     this.animate();
     window.addEventListener('deviceorientation', this.handler);
-
   }
 
   ngOnDestroy(): void {
@@ -46,25 +46,21 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
   handler = (event: DeviceOrientationEvent) => {
     const degToRad = (deg: number) => deg * Math.PI / 180;
 
-    // Convertim graus a radians
-    const alpha = degToRad(event.alpha || 0); // rotació al voltant de Z (0-360)
-    const beta  = degToRad(event.beta  || 0); // rotació al voltant de X (-180 a 180)
-    const gamma = degToRad(event.gamma || 0); // rotació al voltant de Y (-90 a 90)
+    const alpha = degToRad(event.alpha || 0);
+    const beta  = degToRad(event.beta  || 0);
+    const gamma = degToRad(event.gamma || 0);
 
     this.setCameraRotation(beta, gamma, alpha);
   };
 
   private initThree(): void {
-    // Escena
     this.scene = new THREE.Scene();
 
-    // Càmera
     const width = this.container.nativeElement.clientWidth;
     const height = this.container.nativeElement.clientHeight;
     this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-    this.camera.position.set(0, 0, 5);
+    this.camera.position.set(0, 2, 5); // puja una mica la càmera per veure el terra
 
-    // Renderer
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(width, height);
     this.container.nativeElement.appendChild(this.renderer.domElement);
@@ -75,10 +71,24 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
     this.cube = new THREE.Mesh(geometry, material);
     this.scene.add(this.cube);
 
-    // Posa la rotació inicial de la càmera (angles en radians)
+    // Terra (plane)
+    const groundGeo = new THREE.PlaneGeometry(10, 10);
+    const groundMat = new THREE.MeshStandardMaterial({ color: 0x228822, side: THREE.DoubleSide });
+    const ground = new THREE.Mesh(groundGeo, groundMat);
+    ground.rotation.x = -Math.PI / 2; // gira el pla 90 graus per fer-lo horitzontal
+    ground.position.y = -0.5; // posa-ho just sota el cub (el cub fa 1 d'alçada)
+    this.scene.add(ground);
+
+    // Afegim llum perquè es vegi el terra (amb materials que reaccionen a la llum)
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    this.scene.add(ambientLight);
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    directionalLight.position.set(5, 10, 7);
+    this.scene.add(directionalLight);
+
     this.setCameraRotation(Math.PI / 12, Math.PI / 6, 0);
 
-    // Ajustar la mida en redimensionar la finestra
     window.addEventListener('resize', () => this.onResize());
   }
 
@@ -93,7 +103,6 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
   private animate = (): void => {
     this.animationId = requestAnimationFrame(this.animate);
 
-    // Rotació contínua cub
     this.cube.rotation.x += 0.01;
     this.cube.rotation.y += 0.01;
 
