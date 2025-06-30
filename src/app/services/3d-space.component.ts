@@ -47,9 +47,11 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
   private scene!: THREE.Scene;
   camera!: THREE.PerspectiveCamera;
   private renderer!: THREE.WebGLRenderer;
-  private cube!: THREE.Mesh;
   private ground!: THREE.Mesh;
   private animationId: number | null = null;
+
+  // Array de cubs
+  private cubes: THREE.Mesh[] = [];
 
   // Grup per pivotar la càmera i el món
   private worldGroup!: THREE.Group;
@@ -83,7 +85,7 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
     const degToRad = (deg: number) => deg * Math.PI / 180;
 
     const alpha = degToRad(alphaDeg); // Z
-    const beta = degToRad(betaDeg);   // X
+    const beta = degToRad(betaDeg) - 1.5 ;   // X
     const gamma = degToRad(gammaDeg); // Y
 
     const euler = new THREE.Euler(beta, gamma, alpha, 'ZXY');
@@ -95,7 +97,7 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
   }
 
   setCameraRotationManual(xRad: number, yRad: number, zRad: number) {
-    this.camera.rotation.set(xRad, yRad, zRad);
+    this.camera.rotation.set(xRad , yRad, zRad);
   }
 
   private initThree(): void {
@@ -122,12 +124,23 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
     this.ground.position.y = 0;
     this.worldGroup.add(this.ground);
 
-    // Cub d'exemple sobre el terra
+    // Crear 4 cubs a 5 metres en les 4 direccions oposades
     const cubeGeo = new THREE.BoxGeometry(1, 1, 1);
     const cubeMat = new THREE.MeshNormalMaterial();
-    this.cube = new THREE.Mesh(cubeGeo, cubeMat);
-    this.cube.position.y = 0.5; // mig metre sobre el terra
-    this.worldGroup.add(this.cube);
+
+    const positions = [
+      new THREE.Vector3(0, 0.5, -5),  // Front
+      new THREE.Vector3(0, 0.5, 5),   // Darrere
+      new THREE.Vector3(-5, 0.5, 0),  // Esquerra
+      new THREE.Vector3(5, 0.5, 0),   // Dreta
+    ];
+
+    this.cubes = positions.map(pos => {
+      const cube = new THREE.Mesh(cubeGeo, cubeMat);
+      cube.position.copy(pos);
+      this.worldGroup.add(cube);
+      return cube;
+    });
 
     // Llums
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
@@ -150,8 +163,11 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
   private animate = (): void => {
     this.animationId = requestAnimationFrame(this.animate);
 
-    this.cube.rotation.x += 0.01;
-    this.cube.rotation.y += 0.01;
+    // Fer girar tots els cubs
+    for (const cube of this.cubes) {
+      cube.rotation.x += 0.01;
+      cube.rotation.y += 0.01;
+    }
 
     this.renderer.render(this.scene, this.camera);
   }
