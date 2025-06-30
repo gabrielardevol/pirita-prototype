@@ -84,11 +84,11 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
   getQuaternionFromDeviceOrientation(alphaDeg: number = 0, betaDeg: number = 0, gammaDeg: number = 0): THREE.Quaternion {
     const degToRad = (deg: number) => deg * Math.PI / 180;
 
-    const alpha = degToRad(0); // Z
+    const alpha = degToRad(0 - 1.507); // Z
     // const alpha = degToRad(alphaDeg); // Z
 
-    const beta = 0 - (degToRad(betaDeg) + 1.5) ;   // X
-    const gamma = degToRad(0); // Y
+    const beta = 0 - (degToRad(betaDeg) + 1.507) ;   // X
+    const gamma = degToRad(0 ); // Y
     // const gamma = degToRad(gammaDeg); // Y
 
     const euler = new THREE.Euler(beta, gamma, alpha, 'ZXY');
