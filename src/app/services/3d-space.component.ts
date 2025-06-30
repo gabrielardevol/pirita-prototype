@@ -93,6 +93,7 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
     const cubeMat = new THREE.MeshNormalMaterial();
     this.cube = new THREE.Mesh(cubeGeo, cubeMat);
     this.cube.position.y = 0.5; // mig metre sobre el terra
+    this.cube.position.x = 2;
     this.worldGroup.add(this.cube);
 
     // Llums
@@ -114,11 +115,11 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
   }
 
   private animate = (): void => {
-    this.animationId = requestAnimationFrame(this.animate);
-
-    this.cube.rotation.x += 0.01;
-    this.cube.rotation.y += 0.01;
-
-    this.renderer.render(this.scene, this.camera);
+    // this.animationId = requestAnimationFrame(this.animate);
+    //
+    // this.cube.rotation.x += 0.01;
+    // this.cube.rotation.y += 0.01;
+    //
+    // this.renderer.render(this.scene, this.camera);
   }
 }
