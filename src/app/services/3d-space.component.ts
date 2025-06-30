@@ -88,7 +88,7 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
     const beta = degToRad(betaDeg) + 1.5 ;   // X
     const gamma = degToRad(gammaDeg); // Y
 
-    const euler = new THREE.Euler(beta, gamma, alpha, 'ZXY');
+    const euler = new THREE.Euler(alpha, beta, gamma, 'ZXY');
     return new THREE.Quaternion().setFromEuler(euler);
   }
 
