@@ -31,6 +31,8 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.initThree();
     this.animate();
+    window.addEventListener('deviceorientation', this.handler);
+
   }
 
   ngOnDestroy(): void {
@@ -38,6 +40,7 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
       cancelAnimationFrame(this.animationId);
     }
     this.renderer.dispose();
+    window.removeEventListener('deviceorientation', this.handler);
   }
 
   handler = (event: DeviceOrientationEvent) => {
