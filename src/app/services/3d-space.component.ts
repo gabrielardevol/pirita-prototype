@@ -38,9 +38,14 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
   }
 
   handler = (event: DeviceOrientationEvent) => {
-    this.setCameraRotation(
-      event.alpha || 0, event.beta  || 0, event.gamma || 0
-    )
+    const degToRad = (deg: number) => deg * Math.PI / 180;
+
+    // Convertim graus a radians
+    const alpha = degToRad(event.alpha || 0); // rotació al voltant de Z (0-360)
+    const beta  = degToRad(event.beta  || 0); // rotació al voltant de X (-180 a 180)
+    const gamma = degToRad(event.gamma || 0); // rotació al voltant de Y (-90 a 90)
+
+    this.setCameraRotation(beta, gamma, alpha);
   };
 
   private initThree(): void {
