@@ -93,7 +93,6 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
     const cubeMat = new THREE.MeshNormalMaterial();
     this.cube = new THREE.Mesh(cubeGeo, cubeMat);
     this.cube.position.y = 0.5; // mig metre sobre el terra
-    this.cube.position.x = 2;
     this.worldGroup.add(this.cube);
 
     // Llums
