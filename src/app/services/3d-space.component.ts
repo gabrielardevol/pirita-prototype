@@ -81,7 +81,9 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
     if (event.gamma === null) return;
 
     const quaternion = this.getQuaternionFromDeviceOrientation(event.alpha, event.beta, event.gamma);
-    this.camera.quaternion.copy(quaternion).invert();
+    // this.camera.quaternion.copy(quaternion).invert();
+    this.camera.quaternion.copy(quaternion)
+
 
     const eulerFromQuat = new THREE.Euler().setFromQuaternion(this.camera.quaternion, 'YXZ');
     this.rotationX = eulerFromQuat.x;
