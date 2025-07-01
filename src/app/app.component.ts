@@ -11,12 +11,12 @@ import {ThreeOrientationComponent} from './services/three-orientation.component'
   selector: 'app-root',
   imports: [RouterOutlet, CameraComponent, GeolocationComponent, DeviceOrientationComponent, ThreeDSpaceComponent, Compass3DComponent, ThreeOrientationComponent],
   template: `
-  <app-camera></app-camera>
-  <app-geolocation></app-geolocation>
-  <app-device-orientation></app-device-orientation>
+<!--  <app-camera></app-camera>-->
+<!--  <app-geolocation></app-geolocation>-->
+<!--  <app-device-orientation></app-device-orientation>-->
 <!--<app-compass-3d></app-compass-3d>-->
-  <app-three-orientation></app-three-orientation>
-<!--  <app-3d-space></app-3d-space>-->
+<!--  <app-three-orientation></app-three-orientation>-->
+  <app-3d-space></app-3d-space>
   `,
 })
 export class AppComponent {
