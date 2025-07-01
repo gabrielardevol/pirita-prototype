@@ -74,23 +74,26 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
     this.renderer.dispose();
     window.removeEventListener('deviceorientation', this.handler);
   }
-
   handler = (event: DeviceOrientationEvent) => {
-    if (event.alpha === null) return;
-    if (event.beta === null) return;
-    if (event.gamma === null) return;
+    if (event.alpha === null || event.beta === null || event.gamma === null) return;
 
     const quaternion = this.getQuaternionFromDeviceOrientation(event.alpha, event.beta, event.gamma);
-    // this.camera.quaternion.copy(quaternion).invert();
-    this.camera.quaternion.copy(quaternion)
 
+    // Convertim a euler per poder modificar només X
+    const fullEuler = new THREE.Euler().setFromQuaternion(quaternion, 'YXZ');
 
-    const eulerFromQuat = new THREE.Euler().setFromQuaternion(this.camera.quaternion, 'YXZ');
-    this.rotationX = eulerFromQuat.x;
-    this.rotationY = eulerFromQuat.y;
-    this.rotationZ = eulerFromQuat.z;
+    // Crea una nova rotació amb només X sincronitzat
+    const currentEuler = new THREE.Euler().setFromQuaternion(this.camera.quaternion, 'YXZ');
+    currentEuler.x = fullEuler.x; // Actualitza només X
 
+    const updatedQuat = new THREE.Quaternion().setFromEuler(currentEuler);
+    this.camera.quaternion.copy(updatedQuat);
+
+    this.rotationX = currentEuler.x;
+    this.rotationY = currentEuler.y;
+    this.rotationZ = currentEuler.z;
   };
+
 
   getQuaternionFromDeviceOrientation(alphaDeg: number = 0, betaDeg: number = 0, gammaDeg: number = 0): THREE.Quaternion {
     const degToRad = (deg: number) => deg * Math.PI / 180;
