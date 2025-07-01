@@ -8,6 +8,8 @@ import {FormsModule} from '@angular/forms';
     <p>rotació x: {{ this.camera.rotation.x }}</p>
     <p>rotació y: {{ this.camera.rotation.y }}</p>
     <p>rotació z: {{ this.camera.rotation.z }}</p>
+    <button (click)="rotateWorldGroup()">Gira el món (Y +0.1 rad)</button>
+
     <form style="margin-top: 10px;">
       <label>
         X (rad):
@@ -174,4 +176,9 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
 
     this.renderer.render(this.scene, this.camera);
   }
+
+  rotateWorldGroup() {
+    this.worldGroup.rotation.x += 1.5;
+  }
+
 }
