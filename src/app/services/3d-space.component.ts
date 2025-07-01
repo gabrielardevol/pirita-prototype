@@ -77,22 +77,25 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
   handler = (event: DeviceOrientationEvent) => {
     if (event.alpha === null || event.beta === null || event.gamma === null) return;
 
-    const quaternion = this.getQuaternionFromDeviceOrientation(event.alpha, event.beta, event.gamma);
+    const deviceQuat = this.getQuaternionFromDeviceOrientation(event.alpha, event.beta, event.gamma);
 
-    // Convertim a euler per poder modificar només X
-    const fullEuler = new THREE.Euler().setFromQuaternion(quaternion, 'YXZ');
+    // Obtenim rotació X (pitch) del dispositiu
+    const deviceEuler = new THREE.Euler().setFromQuaternion(deviceQuat, 'YXZ');
+    const devicePitchX = deviceEuler.x;
 
-    // Crea una nova rotació amb només X sincronitzat
+    // Obtenim l’Euler actual de la càmera
     const currentEuler = new THREE.Euler().setFromQuaternion(this.camera.quaternion, 'YXZ');
-    currentEuler.x = fullEuler.x; // Actualitza només X
 
-    const updatedQuat = new THREE.Quaternion().setFromEuler(currentEuler);
-    this.camera.quaternion.copy(updatedQuat);
+    // Actualitzem només la X (pitch), mantenim Y i Z
+    const updatedEuler = new THREE.Euler(devicePitchX, currentEuler.y, currentEuler.z, 'YXZ');
+    this.camera.quaternion.setFromEuler(updatedEuler);
 
-    this.rotationX = currentEuler.x;
-    this.rotationY = currentEuler.y;
-    this.rotationZ = currentEuler.z;
+    // Per sincronitzar formulari
+    this.rotationX = updatedEuler.x;
+    this.rotationY = updatedEuler.y;
+    this.rotationZ = updatedEuler.z;
   };
+
 
 
   getQuaternionFromDeviceOrientation(alphaDeg: number = 0, betaDeg: number = 0, gammaDeg: number = 0): THREE.Quaternion {
