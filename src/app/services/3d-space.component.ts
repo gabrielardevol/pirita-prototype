@@ -166,19 +166,19 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
 
   private animate = (): void => {
     this.animationId = requestAnimationFrame(this.animate);
-
-    // Fer girar tots els cubs
-    for (const cube of this.cubes) {
-      cube.rotation.x += 0.01;
-      cube.rotation.y += 0.01;
-    }
+    //
+    // // Fer girar tots els cubs
+    // for (const cube of this.cubes) {
+    //   cube.rotation.x += 0.01;
+    //   cube.rotation.y += 0.01;
+    // }
 
     this.renderer.render(this.scene, this.camera);
   }
 
   rotateWorldGroup() {
     this.worldGroup.rotation.x += 1.5;
-    this.worldGroup.rotation.z += 1.5;
+    this.worldGroup.rotation.y += 1.5;
 
   }
 
