@@ -6,17 +6,9 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <h2>Vista de la càmera</h2>
-    <video #videoElement autoplay playsinline></video>
+    <video style="width: 100vw; height: 100vh; object-fit: cover" #videoElement autoplay playsinline></video>
   `,
-  styles: [`
-    video {
-      width: 100%;
-      max-width: 600px;
-      border: 2px solid #333;
-      border-radius: 8px;
-    }
-  `]
+
 })
 export class CameraComponent implements AfterViewInit {
   @ViewChild('videoElement') videoElement!: ElementRef<HTMLVideoElement>;

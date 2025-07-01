@@ -12,13 +12,16 @@ import {ArViewerComponent} from './components/ar-viewer/ar-viewer.component';
   selector: 'app-root',
   imports: [RouterOutlet, CameraComponent, GeolocationComponent, DeviceOrientationComponent, ThreeDSpaceComponent, Compass3DComponent, ThreeOrientationComponent, ArViewerComponent],
   template: `
-<!--  <app-camera></app-camera>-->
-<!--  <app-geolocation></app-geolocation>-->
-<!--  <app-device-orientation></app-device-orientation>-->
-<!--<app-compass-3d></app-compass-3d>-->
-<!--  <app-three-orientation></app-three-orientation>-->
-<!--  <app-3d-space></app-3d-space>-->
-<app-ar-viewer></app-ar-viewer>
+    <div style="position: relative">
+      <app-camera ></app-camera>
+      <!--  <app-geolocation></app-geolocation>-->
+      <!--  <app-device-orientation></app-device-orientation>-->
+      <!--<app-compass-3d></app-compass-3d>-->
+      <!--  <app-three-orientation></app-three-orientation>-->
+      <!--  <app-3d-space></app-3d-space>-->
+      <app-ar-viewer style="position: absolute; top: 0"></app-ar-viewer>
+    </div>
+
 
   `,
 })
