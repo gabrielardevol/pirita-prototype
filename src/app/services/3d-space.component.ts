@@ -88,7 +88,7 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
 
     // Actualitzem només la X (pitch), mantenim Y i Z
     const updatedEuler = new THREE.Euler(devicePitchX, currentEuler.y, currentEuler.z, 'YXZ');
-    this.camera.quaternion.setFromEuler(updatedEuler);
+    this.camera.quaternion.setFromEuler(updatedEuler).invert();
 
     // Per sincronitzar formulari
     this.rotationX = updatedEuler.x;
