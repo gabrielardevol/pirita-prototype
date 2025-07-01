@@ -24,13 +24,33 @@ export class ArViewerComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     const sceneEl = this.sceneRef.nativeElement as HTMLElement;
-
+    sceneEl.addEventListener('touchstart', (event: TouchEvent) => {
+      if (event.touches.length > 0) {
+        this.placeObject(event);
+      }
+    });
     sceneEl.addEventListener('click', (event: MouseEvent) => {
       this.placeObject(event);
     });
   }
 
-  placeObject(event: MouseEvent): void {
+  placeObject(event: MouseEvent | TouchEvent): void {
+    let clientX: number, clientY: number;
+
+    if ('touches' in event && event.touches.length > 0) {
+      // És un TouchEvent
+      clientX = event.touches[0].clientX;
+      clientY = event.touches[0].clientY;
+    } else if ('clientX' in event && 'clientY' in event) {
+      // És un MouseEvent
+      clientX = (event as MouseEvent).clientX;
+      clientY = (event as MouseEvent).clientY;
+    } else {
+      // No s'ha pogut extreure coordenades
+      return;
+    }
+
+    // Ara continua igual que abans, amb clientX i clientY
     const cameraEl = document.querySelector('[camera]');
     const sceneEl = document.querySelector('a-scene');
 
@@ -40,14 +60,13 @@ export class ArViewerComponent implements OnInit, AfterViewInit {
     if (!camera) return;
 
     const mouse = new THREE.Vector2(
-      (event.clientX / window.innerWidth) * 2 - 1,
-      -(event.clientY / window.innerHeight) * 2 + 1
+      (clientX / window.innerWidth) * 2 - 1,
+      -(clientY / window.innerHeight) * 2 + 1
     );
 
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(mouse, camera);
 
-    // Punt a 1.5 metres en la direcció del clic
     const point = new THREE.Vector3();
     point.copy(raycaster.ray.origin).add(raycaster.ray.direction.multiplyScalar(1.5));
 
