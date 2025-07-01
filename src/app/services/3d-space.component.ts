@@ -5,7 +5,8 @@ import {FormsModule} from '@angular/forms';
 @Component({
   selector: 'app-3d-space',
   template: `
-    <p>rotació x: {{ this.camera.rotation.x }}</p>
+    <p>rotació x: {{ this.camera.rotation.x }}</p> <br>
+    {{deviceX}}
     <p>rotació y: {{ this.camera.rotation.y }}</p>
     <p>rotació z: {{ this.camera.rotation.z }}</p>
     <button (click)="rotateWorldGroup()">Gira el món (Y +0.1 rad)</button>
@@ -14,7 +15,7 @@ import {FormsModule} from '@angular/forms';
       <label>
         X (rad):
         <input type="number" step="0.01" [(ngModel)]="rotationX" (ngModelChange)="applyRotation()" name="rotX">
-        {{deviceX}}
+
       </label>
       <label>
         Y (rad):
