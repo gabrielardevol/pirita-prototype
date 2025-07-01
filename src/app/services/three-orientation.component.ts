@@ -6,8 +6,8 @@ import * as THREE from 'three';
   template: '<div #rendererContainer class="canvas-container"></div>',
   styles: [`
     .canvas-container {
-      width: 100vw;
-      height: 100vh;
+      width: 300px;
+      height: 300px;
       overflow: hidden;
     }
   `]
