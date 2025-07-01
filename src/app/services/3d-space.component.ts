@@ -14,6 +14,7 @@ import {FormsModule} from '@angular/forms';
       <label>
         X (rad):
         <input type="number" step="0.01" [(ngModel)]="rotationX" (ngModelChange)="applyRotation()" name="rotX">
+        {{deviceX}}
       </label>
       <label>
         Y (rad):
@@ -59,6 +60,7 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
   // Grup per pivotar la càmera i el món
   private worldGroup!: THREE.Group;
 
+  deviceX = 0;
   rotationX = 0;
   rotationY = 0;
   rotationZ = 0;
@@ -76,6 +78,8 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
   }
   handler = (event: DeviceOrientationEvent) => {
     if (event.alpha === null || event.beta === null || event.gamma === null) return;
+
+    this.deviceX = event.alpha
 
     const deviceQuat = this.getQuaternionFromDeviceOrientation(event.alpha, event.beta, event.gamma);
 
