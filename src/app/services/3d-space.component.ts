@@ -178,6 +178,8 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
 
   rotateWorldGroup() {
     this.worldGroup.rotation.x += 1.5;
+    this.worldGroup.rotation.z += 1.5;
+
   }
 
 }
