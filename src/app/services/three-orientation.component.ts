@@ -19,6 +19,7 @@ export class ThreeOrientationComponent implements OnInit {
   renderer!: THREE.WebGLRenderer;
   cube!: THREE.Mesh;
   sphere!: THREE.Mesh;
+  private objects: { [key: string]: THREE.Mesh } = {};
 
   constructor(private ngZone: NgZone) {}
 
@@ -47,17 +48,36 @@ export class ThreeOrientationComponent implements OnInit {
   }
 
   initObjects() {
+    // Terra / horitzó
+    const groundGeometry = new THREE.PlaneGeometry(50, 50);
+    const groundMaterial = new THREE.MeshStandardMaterial({ color: 0x228b22 });
+    const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+    // ground.rotation.x = -Math.PI / 2;
+    this.scene.add(ground);
+
+
     const geometry = new THREE.BoxGeometry();
     const material = new THREE.MeshStandardMaterial({ color: 0xff0000 });
     this.cube = new THREE.Mesh(geometry, material);
     this.cube.position.set(2, 0, -5);
     this.scene.add(this.cube);
 
-    const sphereGeo = new THREE.SphereGeometry(0.5, 32, 32);
-    const sphereMat = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
-    this.sphere = new THREE.Mesh(sphereGeo, sphereMat);
-    this.sphere.position.set(-2, 0, -5);
-    this.scene.add(this.sphere);
+// Objectes als punts cardinals
+    const markerGeometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+    const cardinalPoints = [
+      { label: 'N', x: 0, z: -5 },
+      { label: 'S', x: 0, z: 5 },
+      { label: 'E', x: 5, z: 0 },
+      { label: 'O', x: -5, z: 0 },
+    ];
+
+    for (const point of cardinalPoints) {
+      const material = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+      const marker = new THREE.Mesh(markerGeometry, material);
+      marker.position.set(point.x, 0.25, point.z);
+      this.scene.add(marker);
+      this.objects[point.label] = marker;
+    }
   }
 
   handleOrientation() {
