@@ -40,6 +40,7 @@ import {FormsModule} from '@angular/forms';
     div {
       width: 600px;
       height: 600px;
+      transform: rotate(180deg);
     }
   `]
 })
