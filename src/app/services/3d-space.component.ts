@@ -82,6 +82,12 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
 
     const quaternion = this.getQuaternionFromDeviceOrientation(event.alpha, event.beta, event.gamma);
     this.camera.quaternion.copy(quaternion).invert();
+
+    const eulerFromQuat = new THREE.Euler().setFromQuaternion(this.camera.quaternion, 'YXZ');
+    this.rotationX = eulerFromQuat.x;
+    this.rotationY = eulerFromQuat.y;
+    this.rotationZ = eulerFromQuat.z;
+
   };
 
   getQuaternionFromDeviceOrientation(alphaDeg: number = 0, betaDeg: number = 0, gammaDeg: number = 0): THREE.Quaternion {
@@ -101,9 +107,13 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
     this.setCameraRotationManual(this.rotationX, this.rotationY, this.rotationZ);
   }
 
+
   setCameraRotationManual(xRad: number, yRad: number, zRad: number) {
-    this.camera.rotation.set(xRad , yRad, zRad);
+    const euler = new THREE.Euler(xRad, yRad, zRad, 'YXZ');
+    const quaternion = new THREE.Quaternion().setFromEuler(euler);
+    this.camera.quaternion.copy(quaternion);
   }
+
 
   private initThree(): void {
     this.scene = new THREE.Scene();
@@ -178,8 +188,8 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
   }
 
   rotateWorldGroup() {
-    this.worldGroup.rotation.x += 1.5;
-    this.worldGroup.rotation.y += 1.5;
+    this.worldGroup.rotation.x += Math.PI / 2;
+    // this.worldGroup.rotation.y += 1.5;
 
   }
 
