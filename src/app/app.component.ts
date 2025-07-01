@@ -13,8 +13,8 @@ import {Compass3DComponent} from './services/compass.component';
   <app-camera></app-camera>
   <app-geolocation></app-geolocation>
   <app-device-orientation></app-device-orientation>
-<!--<app-compass-3d></app-compass-3d>-->
-  <app-3d-space></app-3d-space>
+<app-compass-3d></app-compass-3d>
+<!--  <app-3d-space></app-3d-space>-->
   `,
 })
 export class AppComponent {
