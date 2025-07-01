@@ -82,7 +82,8 @@ export class ThreeDSpaceComponent implements OnInit, OnDestroy {
 
     this.deviceX = event.alpha
 
-    const deviceQuat = this.getQuaternionFromDeviceOrientation(event.alpha, event.beta, event.gamma);
+    // const deviceQuat = this.getQuaternionFromDeviceOrientation(event.alpha, event.beta, event.gamma);
+    const deviceQuat = this.getQuaternionFromDeviceOrientation(  event.alpha,event.beta, event.gamma);
 
     // Obtenim rotació X (pitch) del dispositiu
     const deviceEuler = new THREE.Euler().setFromQuaternion(deviceQuat, 'YXZ');
