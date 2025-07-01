@@ -6,12 +6,36 @@
   style="height: 300px; width: 300px;"
 >
   <!-- Exemple d’un objecte GPS -->
+  <!-- Punt Nord -->
   <a-box
-    gps-entity-place="latitude: 41.3874; longitude: 2.1686"
-    material="color: gold;"
+    gps-entity-place="latitude: 41.394768; longitude: 2.190428"
+    color="red"
     scale="2 2 2"
-    position="0 0 0"
+    position="0 1 0"
   ></a-box>
 
+  <!-- Punt Sud -->
+  <a-box
+    gps-entity-place="latitude: 41.384768; longitude: 2.190428"
+    color="blue"
+    scale="2 2 2"
+    position="0 1 0"
+  ></a-box>
+
+  <!-- Punt Est -->
+  <a-box
+    gps-entity-place="latitude: 41.389768; longitude: 2.195428"
+    color="green"
+    scale="2 2 2"
+    position="0 1 0"
+  ></a-box>
+
+  <!-- Punt Oest -->
+  <a-box
+    gps-entity-place="latitude: 41.389768; longitude: 2.185428"
+    color="yellow"
+    scale="2 2 2"
+    position="0 1 0"
+  ></a-box>
   <a-camera gps-camera rotation-reader></a-camera>
 </a-scene>
