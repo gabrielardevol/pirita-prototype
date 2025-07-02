@@ -14,14 +14,14 @@ import * as THREE from 'three';
       renderer="logarithmicDepthBuffer: true;"
     >
       <!-- Objecte 3D a coordenades GPS -->
-      <a-entity
-        gps-new-entity-place="latitude: 41.0790405; longitude: 1.1496969"
-        gltf-model="https://cdn.aframe.io/test-models/models/gltf/DamagedHelmet/glTF/DamagedHelmet.gltf"
-        scale="1 1 1"
-        rotation="0 180 0"
-      ></a-entity>
+<!--      <a-entity-->
+<!--        gps-new-entity-place="latitude: 41.0790405; longitude: 1.1496969"-->
+<!--        gltf-model="https://cdn.aframe.io/test-models/models/gltf/DamagedHelmet/glTF/DamagedHelmet.gltf"-->
+<!--        scale="1 1 1"-->
+<!--        rotation="0 180 0"-->
+<!--      ></a-entity>-->
 
-      <a-box material="color: yellow" gps-new-entity-place="latitude: 41.0790405; longitude: 1.1496969"/>
+      <a-box material="color: yellow" gps-new-entity-place="latitude: 41.0790405; longitude: 1.1496969"></a-box>
 
       <!-- Càmera GPS -->
       <a-camera gps-new-camera rotation-reader></a-camera>
