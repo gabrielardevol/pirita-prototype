@@ -25,6 +25,11 @@ export class ArViewerComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.getLocation();
+    const cam = document.querySelector('[gps-camera]');
+    cam?.addEventListener('gps-camera-update-position', (e: any) => {
+      console.log('GPS OK:', e.detail.position);
+    });
+
   }
 
   ngAfterViewInit(): void {
