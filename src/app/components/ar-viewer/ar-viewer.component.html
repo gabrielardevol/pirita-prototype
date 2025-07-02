@@ -12,15 +12,24 @@
     gps-entity-place="latitude: 41.3874; longitude: 2.1686"
     material="color: gold;"
     scale="2 2 2"
-    position="0 0 0"
+
   ></a-box>
   <a-box
     gps-entity-place="latitude: 41.3874; longitude: 2.1686"
     material="color: red;"
     scale="0.1 0.1 0.1"
-    position="0 2 0"
+
   ></a-box>
-  <a-camera gps-camera rotation-reader></a-camera>
-  <a-entity camera gps-camera rotation-reader id="camera"></a-entity>
+  <a-camera id="camera" gps-camera rotation-reader></a-camera>
+<!--  <a-entity camera gps-camera rotation-reader id="camera"></a-entity>-->
   <a-entity id="objects-container"></a-entity>
+
+  <a-text
+    value="Esperant posició GPS..."
+    id="gps-text"
+    position="0 2 -5"
+    look-at="[gps-camera]"
+    scale="5 5 5"
+  ></a-text>
+
 </a-scene>

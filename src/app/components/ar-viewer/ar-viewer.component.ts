@@ -32,6 +32,15 @@ export class ArViewerComponent implements OnInit, AfterViewInit {
     sceneEl.addEventListener('click', (event: MouseEvent) => {
       this.placeObject(event);
     });
+
+    const camera = document.querySelector('[gps-camera]');
+    const text = document.getElementById('gps-text');
+
+    camera?.addEventListener('gps-camera-update-position', (e: any) => {
+      const lat = e.detail.position.latitude;
+      const lon = e.detail.position.longitude;
+      text?.setAttribute('value', `LAT: ${lat.toFixed(5)}\nLON: ${lon.toFixed(5)}`);
+    });
   }
 
   placeObject(event: MouseEvent | TouchEvent): void {
