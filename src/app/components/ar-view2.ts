@@ -24,7 +24,7 @@ import * as THREE from 'three';
       <a-box material="color: yellow" gps-new-entity-place="latitude: 41.0790405; longitude: 1.1496969"></a-box>
 
       <!-- Càmera GPS -->
-      <a-camera gps-new-camera rotation-reader></a-camera>
+      <a-camera gps-projected-camera rotation-reader></a-camera>
     </a-scene>
   `,
   styles: [`
