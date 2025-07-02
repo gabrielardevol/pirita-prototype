@@ -4,7 +4,8 @@ import {
   AfterViewInit,
   Renderer2,
   ElementRef,
-  ViewChild, CUSTOM_ELEMENTS_SCHEMA
+  ViewChild,
+  CUSTOM_ELEMENTS_SCHEMA
 } from '@angular/core';
 import * as THREE from 'three';
 
@@ -12,57 +13,69 @@ import * as THREE from 'three';
   selector: 'app-ar-viewer',
   templateUrl: './ar-viewer.component.html',
   styleUrls: ['./ar-viewer.component.scss'],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]  // ✅ Afegeix aquesta línia
-
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class ArViewerComponent implements OnInit, AfterViewInit {
   @ViewChild('scene') sceneRef!: ElementRef;
 
+  gpsReady = false;
+  loading = true;
+
   constructor(private renderer: Renderer2) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.getLocation();
+  }
 
   ngAfterViewInit(): void {
-    const sceneEl = this.sceneRef.nativeElement as HTMLElement;
-    sceneEl.addEventListener('touchstart', (event: TouchEvent) => {
-      if (event.touches.length > 0) {
-        this.placeObject(event);
+    // No inicialitzem res fins que gpsReady sigui true
+  }
+
+  ngAfterViewChecked(): void {
+    // Quan gpsReady canvia a true, afegim els listeners
+    if (this.gpsReady && this.sceneRef) {
+      const sceneEl = this.sceneRef.nativeElement as HTMLElement;
+
+      // Evitar múltiples listeners en diferents cicles
+      if (!sceneEl.hasAttribute('data-listeners-added')) {
+        sceneEl.setAttribute('data-listeners-added', 'true');
+
+        sceneEl.addEventListener('touchstart', (event: TouchEvent) => {
+          if (event.touches.length > 0) {
+            this.placeObject(event);
+          }
+        });
+        sceneEl.addEventListener('click', (event: MouseEvent) => {
+          this.placeObject(event);
+        });
+
+        const camera = document.querySelector('[gps-camera]');
+        const text = document.getElementById('gps-text');
+
+        camera?.addEventListener('gps-camera-update-position' as any, (e: any) => {
+          const lat = e.detail.position.latitude;
+          const lon = e.detail.position.longitude;
+          text?.setAttribute('value', `LAT: ${lat.toFixed(5)}\nLON: ${lon.toFixed(5)}`);
+        });
       }
-    });
-    sceneEl.addEventListener('click', (event: MouseEvent) => {
-      this.placeObject(event);
-    });
-
-    const camera = document.querySelector('[gps-camera]');
-    const text = document.getElementById('gps-text');
-
-    camera?.addEventListener('gps-camera-update-position', (e: any) => {
-      const lat = e.detail.position.latitude;
-      const lon = e.detail.position.longitude;
-      text?.setAttribute('value', `LAT: ${lat.toFixed(5)}\nLON: ${lon.toFixed(5)}`);
-    });
+    }
   }
 
   placeObject(event: MouseEvent | TouchEvent): void {
     let clientX: number, clientY: number;
 
     if ('touches' in event && event.touches.length > 0) {
-      // És un TouchEvent
       clientX = event.touches[0].clientX;
       clientY = event.touches[0].clientY;
     } else if ('clientX' in event && 'clientY' in event) {
-      // És un MouseEvent
       clientX = (event as MouseEvent).clientX;
       clientY = (event as MouseEvent).clientY;
     } else {
-      // No s'ha pogut extreure coordenades
       return;
     }
 
-    // Ara continua igual que abans, amb clientX i clientY
     const cameraEl = document.querySelector('[camera]');
     const sceneEl = document.querySelector('a-scene');
-
     if (!cameraEl || !sceneEl) return;
 
     const camera = (cameraEl as any).getObject3D('camera');
@@ -87,5 +100,30 @@ export class ArViewerComponent implements OnInit, AfterViewInit {
     box.setAttribute('position', `${point.x} ${point.y} ${point.z}`);
 
     sceneEl.appendChild(box);
+  }
+
+  getLocation() {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          console.log('Posició obtinguda:', position.coords.latitude, position.coords.longitude);
+          this.gpsReady = true;
+          this.loading = false;
+        },
+        (error) => {
+          console.error('Error obtenint posició:', error);
+          alert('No s’ha pogut obtenir permís o ubicació GPS.');
+          this.loading = false;
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0,
+        }
+      );
+    } else {
+      alert('Geolocalització no suportada pel navegador.');
+      this.loading = false;
+    }
   }
 }
