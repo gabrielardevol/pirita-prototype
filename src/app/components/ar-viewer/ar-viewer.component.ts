@@ -58,6 +58,7 @@ export class ArViewerComponent implements OnInit, AfterViewInit {
         const text = document.getElementById('gps-text');
 
         camera?.addEventListener('gps-camera-update-position' as any, (e: any) => {
+          document.getElementById("location").textContent = "located"
           const lat = e.detail.position.latitude;
           const lon = e.detail.position.longitude;
           text?.setAttribute('value', `LAT: ${lat.toFixed(5)}\nLON: ${lon.toFixed(5)}`);
