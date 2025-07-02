@@ -68,7 +68,7 @@ export class ArViewerComponent implements OnInit, AfterViewInit {
     raycaster.setFromCamera(mouse, camera);
 
     const point = new THREE.Vector3();
-    point.copy(raycaster.ray.origin).add(raycaster.ray.direction.multiplyScalar(1.5));
+    point.copy(raycaster.ray.origin).add(raycaster.ray.direction.multiplyScalar(0.5));
 
     const box = document.createElement('a-box');
     box.setAttribute('width', '0.1');
