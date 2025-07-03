@@ -145,6 +145,8 @@ export class ArGpsSceneComponent implements OnInit {
       scene.appendChild(newObject);
       this.objectsPlaced++;
       console.log(`Objecte afegit a lat: ${this.userLatitude}, long: ${this.userLongitude}`);
+      alert(`Objecte afegit a lat: ${this.userLatitude}, long: ${this.userLongitude}`);
+
     }
   }
 
