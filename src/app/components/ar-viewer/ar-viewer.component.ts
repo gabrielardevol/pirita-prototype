@@ -7,13 +7,13 @@ import {
   ViewChild,
   CUSTOM_ELEMENTS_SCHEMA
 } from '@angular/core';
-import * as THREE from 'three';
+import * as THREEx from '../../../../node_modules/ar.js/three.js/build/ar.js'
 
 @Component({
   selector: 'app-ar-viewer',
   templateUrl: './ar-viewer.component.html',
   styleUrls: ['./ar-viewer.component.scss'],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  // schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class ArViewerComponent implements OnInit, AfterViewInit {
   @ViewChild('scene') sceneRef!: ElementRef;

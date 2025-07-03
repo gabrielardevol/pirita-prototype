@@ -16,7 +16,7 @@ import {ArGpsSceneComponent} from './components/ar-view2';
   template: `
 <!--    <app-realtime-location></app-realtime-location>-->
     <div style="position: relative">
-      <app-camera ></app-camera>
+<!--      <app-camera ></app-camera>-->
       <app-ar-gps-scene style="position: absolute; top: 0"></app-ar-gps-scene>
 
       <!--  <app-geolocation></app-geolocation>-->
