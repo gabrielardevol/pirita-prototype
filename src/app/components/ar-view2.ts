@@ -114,9 +114,9 @@ export class ArGpsSceneComponent implements OnInit {
   }
 
   @HostListener('document:click', ['$event'])
-  @HostListener('document:touchstart', ['$event'])
+  // @HostListener('document:touchstart', ['$event'])
   private handleClick(): void {
-    alert(`Clic`);
+    alert(`Clic, lat: ${this.userLatitude}, long: ${this.userLongitude}`);
 
     if (this.objectsPlaced >= this.maxObjects) {
       alert('Has assolit el límit màxim d\'objectes');
@@ -149,6 +149,7 @@ export class ArGpsSceneComponent implements OnInit {
       scene.appendChild(newObject);
       this.objectsPlaced++;
       console.log(`Objecte afegit a lat: ${this.userLatitude}, long: ${this.userLongitude}`);
+      alert(`Objecte afegit a lat: ${this.userLatitude}, long: ${this.userLongitude}`);
 
     }
   }
