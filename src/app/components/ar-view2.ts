@@ -114,7 +114,7 @@ export class ArGpsSceneComponent implements OnInit {
   }
 
   @HostListener('document:click', ['$event'])
-  // @HostListener('document:touchstart', ['$event'])
+  @HostListener('document:touchstart', ['$event'])
   private handleClick(): void {
     alert(`Clic, lat: ${this.userLatitude}, long: ${this.userLongitude}`);
 
