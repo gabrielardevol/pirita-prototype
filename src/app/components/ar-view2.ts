@@ -1,4 +1,4 @@
-import {Component, CUSTOM_ELEMENTS_SCHEMA, OnInit} from '@angular/core';
+import {Component, CUSTOM_ELEMENTS_SCHEMA, HostListener, OnInit} from '@angular/core';
 import * as THREE from 'three';
 
 @Component({
