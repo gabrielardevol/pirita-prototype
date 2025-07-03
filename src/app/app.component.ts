@@ -6,13 +6,12 @@ import {DeviceOrientationComponent} from './services/device-orientation.componen
 import {ThreeDSpaceComponent} from './services/3d-space.component';
 import {Compass3DComponent} from './services/compass.component';
 import {ThreeOrientationComponent} from './services/three-orientation.component';
-import {ArViewerComponent} from './components/ar-viewer/ar-viewer.component';
 import {RealtimeLocationComponent} from './components/realtime-location.coponent';
 import {ArGpsSceneComponent} from './components/ar-view2';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, CameraComponent, GeolocationComponent, DeviceOrientationComponent, ThreeDSpaceComponent, Compass3DComponent, ThreeOrientationComponent, ArViewerComponent, RealtimeLocationComponent, ArGpsSceneComponent],
+  imports: [RouterOutlet, CameraComponent, GeolocationComponent, DeviceOrientationComponent, ThreeDSpaceComponent, Compass3DComponent, ThreeOrientationComponent, RealtimeLocationComponent, ArGpsSceneComponent],
   template: `
 <!--    <app-realtime-location></app-realtime-location>-->
     <div style="position: relative">

@@ -3,7 +3,7 @@ import * as THREE from 'three';
 
 @Component({
   selector: 'app-ar-gps-scene',
-  // schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: `
 <!--    <a-scene-->
 <!--      (click)="placeObject($event)"-->
